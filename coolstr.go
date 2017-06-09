@@ -18,26 +18,28 @@ func CoolStr(input string) int {
 		wordCount  int
 		needConcat bool // need concatenate through two lines or not
 		lastNan    = -1 // last ' ' and '\n' char
+		word       string
 	)
 	wordMap := make(map[string]int)
 	for i, char := range input {
 		if char != '\n' && char != ' ' {
 			continue
 		}
-		word := strings.TrimSpace(input[lastNan+1 : i])
+		word += strings.TrimSpace(input[lastNan+1 : i])
 		if char == '\n' && strings.HasSuffix(word, "-") {
 			word = word[:len(word)-len("-")]
 			lastRune, _ := utf8.DecodeLastRuneInString(word)
-			needConcat = (lastRune >= 'a' && lastRune <= 'z') || (lastRune >= 'A' && lastRune <= 'Z')
+			needConcat = (lastRune >= 'a' && lastRune <= 'z') || (lastRune >= 'A' && lastRune <= 'Z') || (lastRune >= '0' && lastRune <= '9')
+
 		}
+		lastNan = i
 		if needConcat {
 			needConcat = false
 			continue
 		}
-		lastNan = i
 		fmt.Printf("|%d\t%d\tword: %s|\n", lastNan+1, i, word)
 		wordCount += process(wordMap, word)
-
+		word = ""
 	}
 	fmt.Println("----------------")
 	return wordCount

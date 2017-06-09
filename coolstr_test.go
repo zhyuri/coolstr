@@ -75,6 +75,13 @@ func Test_coolStr(t *testing.T) {
 			3,
 		},
 		{
+			"sentence with word wraped(3)",
+			args{
+				input: "That is No. 123-\n456 subway",
+			},
+			5,
+		},
+		{
 			"sentence with phone number",
 			args{
 				input: "The number is 135-1353-1353 135-1353-1353",
