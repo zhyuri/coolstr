@@ -12,63 +12,70 @@ func Test_coolStr(t *testing.T) {
 		want int
 	}{
 		{
-			"Empty test",
+			"empty test",
 			args{
 				input: "\r\n",
 			},
 			0,
 		},
 		{
-			"Simple word test",
+			"simple word test",
 			args{
-				input: "This",
+				input: "This     ",
 			},
 			1,
 		},
 		{
-			"Simple sentence test",
+			"simple sentence test",
 			args{
-				input: "This is a word.",
+				input: "This is      a word.",
 			},
 			4,
 		},
 		{
-			"Sentence with number",
+			"sentence with number",
 			args{
 				input: "There are 100 words",
 			},
 			4,
 		},
 		{
-			"Sentence with name",
+			"sentence with name",
 			args{
 				input: "That is Mr.Zhang Mr. Zhang",
 			},
-			4,
+			5,
 		},
 		{
-			"Sentence with newline",
+			"sentence with newline",
 			args{
 				input: "That is Mr.Zhang\nMr. Zhang",
 			},
-			4,
+			5,
 		},
 		{
-			"Sentence with newline and return",
+			"sentence with newline and return",
 			args{
 				input: "That is Mr.Zhang\r\nMr. Zhang",
 			},
-			4,
+			5,
 		},
 		{
-			"Sentence with word wraped",
+			"sentence with word wraped",
 			args{
 				input: "That is sub-\r\nway subway",
 			},
-			4,
+			3,
 		},
 		{
-			"Sentence with phone number",
+			"sentence with word wraped(2)",
+			args{
+				input: "That is sub-\nway subway",
+			},
+			3,
+		},
+		{
+			"sentence with phone number",
 			args{
 				input: "The number is 135-1353-1353 135-1353-1353",
 			},

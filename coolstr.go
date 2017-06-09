@@ -1,6 +1,7 @@
 package coolstr
 
 import (
+	"fmt"
 	"strings"
 	"unicode/utf8"
 )
@@ -11,65 +12,70 @@ func CoolStr(input string) int {
 	if length <= 0 {
 		return 0
 	}
+	input += " \n"
 
 	var (
-		wordCount int
-		needCat   bool // need concatenate through two lines or not
-		lastNan   int  // last ' ' and '\n' char
+		wordCount  int
+		needConcat bool // need concatenate through two lines or not
+		lastNan    = -1 // last ' ' and '\n' char
 	)
 	wordMap := make(map[string]int)
 	for i, char := range input {
-		// space
-		if char != '\n' && char != ' ' && i-lastNan <= 1 {
+		if char != '\n' && char != ' ' {
 			continue
 		}
-		word := input[lastNan:i]
-		// newline \n
+		word := strings.TrimSpace(input[lastNan+1 : i])
 		if char == '\n' {
-			word, needCat = trimReturn(word)
+			word, needConcat = trimReturn(word)
 		}
-		if needCat {
-			needCat = false
+		if needConcat {
+			needConcat = false
 			continue
 		}
 		lastNan = i
+		fmt.Printf("|%d\t%d\tword: %s|\n", lastNan+1, i, word)
 		wordCount += process(wordMap, word)
 
 	}
+	fmt.Println("----------------")
 	return wordCount
 }
 
-type formater func(string) string
+type valve func(string) string
 
-var formatPipline = []formater{
-	formatNum,
-	formatString,
+var pipline = []valve{
+	valveString,
+	valveNum,
 }
 
-func process(wordMap map[string]int, token string) int {
-	for _, formatFunc := range formatPipline {
-		token = formatFunc(token)
+func process(wordMap map[string]int, token string) (count int) {
+	for _, valveFunc := range pipline {
+		if token = valveFunc(token); token == "" {
+			return
+		}
 	}
 	wordMap[token]++
-	if token != "" && wordMap[token] <= 1 {
-		return 1
-	}
-	return 0
-}
-
-func trimReturn(token string) (newToken string, needCat bool) {
-	newToken = strings.TrimSpace(token)
-	if strings.HasSuffix(token, "-") {
-		newToken = strings.TrimSuffix(newToken, "-")
-		lastRune, _ := utf8.DecodeLastRuneInString(token)
-		needCat = (lastRune >= 'a' && lastRune <= 'z') || (lastRune >= 'A' && lastRune <= 'Z')
+	if wordMap[token] <= 1 {
+		count = 1
 	}
 	return
 }
 
-func formatString(token string) string {
+func trimReturn(token string) (output string, needCat bool) {
+	output = token
+	if !strings.HasSuffix(output, "-") {
+		return
+	}
+	output = output[:len(output)-len("-")]
+	lastRune, _ := utf8.DecodeLastRuneInString(output)
+	needCat = (lastRune >= 'a' && lastRune <= 'z') || (lastRune >= 'A' && lastRune <= 'Z')
+	return
+}
+
+func valveString(token string) string {
 	return token
 }
-func formatNum(token string) string {
+
+func valveNum(token string) string {
 	return token
 }
