@@ -25,8 +25,10 @@ func CoolStr(input string) int {
 			continue
 		}
 		word := strings.TrimSpace(input[lastNan+1 : i])
-		if char == '\n' {
-			word, needConcat = trimReturn(word)
+		if char == '\n' && strings.HasSuffix(word, "-") {
+			word = word[:len(word)-len("-")]
+			lastRune, _ := utf8.DecodeLastRuneInString(word)
+			needConcat = (lastRune >= 'a' && lastRune <= 'z') || (lastRune >= 'A' && lastRune <= 'Z')
 		}
 		if needConcat {
 			needConcat = false
@@ -58,17 +60,6 @@ func process(wordMap map[string]int, token string) (count int) {
 	if wordMap[token] <= 1 {
 		count = 1
 	}
-	return
-}
-
-func trimReturn(token string) (output string, needCat bool) {
-	output = token
-	if !strings.HasSuffix(output, "-") {
-		return
-	}
-	output = output[:len(output)-len("-")]
-	lastRune, _ := utf8.DecodeLastRuneInString(output)
-	needCat = (lastRune >= 'a' && lastRune <= 'z') || (lastRune >= 'A' && lastRune <= 'Z')
 	return
 }
 
