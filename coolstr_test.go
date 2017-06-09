@@ -9,7 +9,7 @@ func Test_coolStr(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want int64
+		want int
 	}{
 		{
 			"Empty test",
@@ -47,7 +47,14 @@ func Test_coolStr(t *testing.T) {
 			4,
 		},
 		{
-			"Sentence with wrap",
+			"Sentence with newline",
+			args{
+				input: "That is Mr.Zhang\nMr. Zhang",
+			},
+			4,
+		},
+		{
+			"Sentence with newline and return",
 			args{
 				input: "That is Mr.Zhang\r\nMr. Zhang",
 			},
@@ -70,7 +77,7 @@ func Test_coolStr(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := coolStr(tt.args.input); got != tt.want {
+			if got := CoolStr(tt.args.input); got != tt.want {
 				t.Errorf("coolStr() = %v, want %v", got, tt.want)
 			}
 		})
