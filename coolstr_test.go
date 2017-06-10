@@ -14,6 +14,13 @@ func Test_coolStr(t *testing.T) {
 		{
 			"empty test",
 			args{
+				input: "",
+			},
+			0,
+		},
+		{
+			"empty test",
+			args{
 				input: "\r\n",
 			},
 			0,
@@ -31,6 +38,13 @@ func Test_coolStr(t *testing.T) {
 				input: "This is      a word.",
 			},
 			4,
+		},
+		{
+			"simple sentence test",
+			args{
+				input: "This is   -$#$%*#",
+			},
+			2,
 		},
 		{
 			"sentence with number",
