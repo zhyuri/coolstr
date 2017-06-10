@@ -1,4 +1,4 @@
-# Coolstr [![Build Status](https://travis-ci.org/zhyuri/coolstr.svg?branch=master)](https://travis-ci.org/zhyuri/coolstr)
+# Coolstr [![Build Status](https://travis-ci.org/zhyuri/coolstr.svg?branch=master)](https://travis-ci.org/zhyuri/coolstr) [![Go Report Card](https://goreportcard.com/badge/github.com/zhyuri/coolstr)](https://goreportcard.com/report/github.com/zhyuri/coolstr)
 
 coolstr is just a tiny function which can calculate how many different words are there in a string.
 
