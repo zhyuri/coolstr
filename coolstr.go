@@ -54,7 +54,6 @@ var cleanExceptRegexp = regexp.MustCompile("[^a-zA-Z0-9.-]")
 
 func process(wordMap map[string]int, isNum bool, token string) (count int) {
 	if isNum {
-		// token = strings.Replace(token, "-", "", -1)
 		token = numExceptRegexp.ReplaceAllLiteralString(token, "")
 	} else {
 		token = cleanExceptRegexp.ReplaceAllLiteralString(token, "")
