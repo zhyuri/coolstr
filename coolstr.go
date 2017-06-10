@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"strings"
 	"unicode/utf8"
+
+	"regexp"
 )
 
 // CoolStr get a string as input and ouput the word count of the string
 func CoolStr(input string) int {
-	length := len(input)
-	if length <= 0 {
+	if len(input) <= 0 {
 		return 0
 	}
 	input += " \n"
@@ -17,7 +18,7 @@ func CoolStr(input string) int {
 	var (
 		wordCount  int
 		needConcat bool // need concatenate through two lines or not
-		lastNan    = -1 // last ' ' and '\n' char
+		lastNan    int  // last ' ' and '\n' char
 		word       string
 	)
 	wordMap := make(map[string]int)
@@ -25,50 +26,55 @@ func CoolStr(input string) int {
 		if char != '\n' && char != ' ' {
 			continue
 		}
-		word += strings.TrimSpace(input[lastNan+1 : i])
+		if word += strings.TrimSpace(input[lastNan:i]); word == "" {
+			continue
+		}
+		lastNan = i + 1
 		if char == '\n' && strings.HasSuffix(word, "-") {
+			// trim suffix "-"
 			word = word[:len(word)-len("-")]
 			lastRune, _ := utf8.DecodeLastRuneInString(word)
-			needConcat = (lastRune >= 'a' && lastRune <= 'z') || (lastRune >= 'A' && lastRune <= 'Z') || (lastRune >= '0' && lastRune <= '9')
-
+			needConcat = !isNotAlphabet(lastRune)
 		}
-		lastNan = i
 		if needConcat {
 			needConcat = false
 			continue
 		}
-		fmt.Printf("|%d\t%d\tword: %s|\n", lastNan+1, i, word)
-		wordCount += process(wordMap, word)
+		// trim suffix punctuation
+		firstRune, _ := utf8.DecodeRuneInString(word[:1])
+		if !isCapital(firstRune) {
+			word = strings.TrimRightFunc(word, isNotAlphabet)
+		}
+		fmt.Printf("|%d\t%d\t%s\t|\n", lastNan, i, word)
+		wordCount += process(wordMap, !isAlphabet(firstRune), word)
 		word = ""
 	}
-	fmt.Println("----------------")
+	fmt.Printf("-------------------\t|\n")
 	return wordCount
 }
 
-type valve func(string) string
+var notAlphaRegexp = regexp.MustCompile("[^a-zA-Z0-9.-]")
 
-var pipline = []valve{
-	valveString,
-	valveNum,
-}
-
-func process(wordMap map[string]int, token string) (count int) {
-	for _, valveFunc := range pipline {
-		if token = valveFunc(token); token == "" {
-			return
-		}
+func process(wordMap map[string]int, isNum bool, token string) (count int) {
+	if isNum {
+		token = strings.Replace(token, "-", "", -1)
 	}
+	if token = notAlphaRegexp.ReplaceAllLiteralString(token, ""); token == "" {
+		return
+	}
+	token = strings.ToLower(token)
 	wordMap[token]++
 	if wordMap[token] <= 1 {
 		count = 1
 	}
 	return
 }
-
-func valveString(token string) string {
-	return token
+func isCapital(r rune) bool {
+	return r >= 'A' && r <= 'Z'
 }
-
-func valveNum(token string) string {
-	return token
+func isAlphabet(r rune) bool {
+	return (r >= 'a' && r <= 'z') || isCapital(r)
+}
+func isNotAlphabet(r rune) bool {
+	return !(isAlphabet(r) || (r >= '0' && r <= '9'))
 }

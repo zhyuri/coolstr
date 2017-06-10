@@ -84,9 +84,30 @@ func Test_coolStr(t *testing.T) {
 		{
 			"sentence with phone number",
 			args{
-				input: "The number is 135-1353-1353 135-1353-1353",
+				input: "The number is 135-1353-1353 13513531353",
 			},
 			4,
+		},
+		{
+			"sentence with comma",
+			args{
+				input: "A B, B",
+			},
+			2,
+		},
+		{
+			"sentence with dot", // TODO: hard to choose between abbreviation and dot
+			args{
+				input: "A is No. 1. No one better than him.",
+			},
+			9,
+		},
+		{
+			"sentence with dash", // TODO: hard to choose between abbreviation and dot
+			args{
+				input: "A is well-known people which is well known.",
+			},
+			7,
 		},
 	}
 	for _, tt := range tests {
