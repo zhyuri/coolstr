@@ -96,16 +96,16 @@ func Test_coolStr(t *testing.T) {
 			2,
 		},
 		{
-			"sentence with dot", // TODO: hard to choose between abbreviation and dot
+			"sentence with dot",
 			args{
 				input: "A is No. 1. No one better than him.",
 			},
 			9,
 		},
 		{
-			"sentence with dash", // TODO: hard to choose between abbreviation and dot
+			"sentence with dash",
 			args{
-				input: "A is well-known people which is well known.",
+				input: "A is a well-known person which is well known.",
 			},
 			7,
 		},

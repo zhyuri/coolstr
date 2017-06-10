@@ -1,0 +1,7 @@
+language: go
+go:
+- 1.8
+- tip
+env:
+- GIMME_OS=linux GIMME_ARCH=amd64
+script: go test $(go list ./...)
