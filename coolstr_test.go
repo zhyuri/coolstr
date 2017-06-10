@@ -40,9 +40,9 @@ func Test_coolStr(t *testing.T) {
 			4,
 		},
 		{
-			"simple sentence test",
+			"simple sentence symbol",
 			args{
-				input: "This is   -$#$%*#",
+				input: "This is   ~!@#$%^&*()_+=",
 			},
 			2,
 		},
@@ -54,12 +54,27 @@ func Test_coolStr(t *testing.T) {
 			4,
 		},
 		{
-			"sentence with name",
+			"sentence with decimal",
 			args{
-				input: "That is Mr.Zhang Mr. Zhang",
+				input: "The price are 10.25 * 1025 ",
 			},
 			5,
 		},
+		{
+			"percent",
+			args{
+				input: "10.25% 10.25",
+			},
+			2,
+		},
+		{
+			"money",
+			args{
+				input: "10.25 ¥10.25",
+			},
+			2,
+		},
+
 		{
 			"sentence with newline",
 			args{

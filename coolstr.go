@@ -32,7 +32,7 @@ func CoolStr(input string) (wordCount int) {
 			// trim suffix "-"
 			word = word[:len(word)-len("-")]
 			lastRune, _ := utf8.DecodeLastRuneInString(word)
-			if !isNotAlphabet(lastRune) {
+			if !isSymbol(lastRune) {
 				continue
 			}
 		}
@@ -40,26 +40,30 @@ func CoolStr(input string) (wordCount int) {
 		// except abbreviation
 		if isLowerCase(firstRune) {
 			// trim suffix punctuation
-			word = strings.TrimRightFunc(word, isNotAlphabet)
+			word = strings.TrimRightFunc(word, isSymbol)
 		}
-		fmt.Printf("|%d\t%d\t%s\t|\n", start, end, word)
-		wordCount += process(wordMap, !isAlphabet(firstRune), word)
+		wordCount += process(wordMap, isNum(findFirstAlphabet(word)), word)
 		word = ""
 	}
 	fmt.Printf("-------------------\t|\n")
 	return wordCount
 }
 
+var numExceptRegexp = regexp.MustCompile("[^0-9%$¥.]")
 var cleanExceptRegexp = regexp.MustCompile("[^a-zA-Z0-9.-]")
 
 func process(wordMap map[string]int, isNum bool, token string) (count int) {
 	if isNum {
-		token = strings.Replace(token, "-", "", -1)
+		// token = strings.Replace(token, "-", "", -1)
+		token = numExceptRegexp.ReplaceAllLiteralString(token, "")
+	} else {
+		token = cleanExceptRegexp.ReplaceAllLiteralString(token, "")
 	}
-	if token = cleanExceptRegexp.ReplaceAllLiteralString(token, ""); token == "" {
+	if token == "" {
 		return
 	}
 	token = strings.ToLower(token)
+	fmt.Printf("|%s\t|\n", token)
 	wordMap[token]++
 	if wordMap[token] <= 1 {
 		count = 1
@@ -72,6 +76,17 @@ func isLowerCase(r rune) bool {
 func isAlphabet(r rune) bool {
 	return isLowerCase(r) || (r >= 'A' && r <= 'Z')
 }
-func isNotAlphabet(r rune) bool {
-	return !(isAlphabet(r) || (r >= '0' && r <= '9'))
+func isNum(r rune) bool {
+	return r >= '0' && r <= '9'
+}
+func isSymbol(r rune) bool {
+	return !isAlphabet(r) && !isNum(r)
+}
+func findFirstAlphabet(word string) (r rune) {
+	for _, r = range word {
+		if !isSymbol(r) {
+			break
+		}
+	}
+	return
 }
