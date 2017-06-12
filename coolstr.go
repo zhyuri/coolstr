@@ -8,7 +8,7 @@ import (
 	"regexp"
 )
 
-// CoolStr get a string as input and ouput the word count of the string
+// CoolStr get a string as input and output the word count of the string
 func CoolStr(input string) (wordCount int) {
 	if len(input) <= 0 {
 		return 0
