@@ -36,13 +36,7 @@ func CoolStr(input string) (wordCount int) {
 				continue
 			}
 		}
-		firstRune, _ := utf8.DecodeRuneInString(word[:1])
-		// except abbreviation
-		if isLowerCase(firstRune) {
-			// trim suffix punctuation
-			word = strings.TrimRightFunc(word, isSymbol)
-		}
-		wordCount += process(wordMap, isNum(findFirstAlphabet(word)), word)
+		wordCount += process(wordMap, word)
 		word = ""
 	}
 	fmt.Printf("-------------------\t|\n")
@@ -52,8 +46,14 @@ func CoolStr(input string) (wordCount int) {
 var numExceptRegexp = regexp.MustCompile("[^0-9%$¥.]")
 var cleanExceptRegexp = regexp.MustCompile("[^a-zA-Z0-9.-]")
 
-func process(wordMap map[string]int, isNum bool, token string) (count int) {
-	if isNum {
+func process(wordMap map[string]int, token string) (count int) {
+	firstRune, _ := utf8.DecodeRuneInString(token[:1])
+	// except abbreviation
+	if isLowerCase(firstRune) {
+		// trim suffix punctuation
+		token = strings.TrimRightFunc(token, isSymbol)
+	}
+	if isNum(findFirstAlphabet(token)) {
 		token = numExceptRegexp.ReplaceAllLiteralString(token, "")
 	} else {
 		token = cleanExceptRegexp.ReplaceAllLiteralString(token, "")
